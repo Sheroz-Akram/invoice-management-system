@@ -1,3 +1,16 @@
+<?php
+// Include Our Modules
+include("../PHP/Database.php");
+include("../PHP/Helper.php");
+
+// Check If User is Already Login or Not
+if(checkLoginStatus() == true){
+    header("Location: ../Dashboard");
+}
+
+?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -21,34 +34,41 @@
         <div class="h4 text-muted text-center">Enter your login details</div>
 
         <?php
-            // Our PHP Login Logic Code
+        // Our PHP Login Logic Code
+        
+        // Check Post Request Exists or not
+        if (isset($_POST['username'])) {
 
-            /*
-            echo "<div class='alert alert-danger' role='alert'>";
-            echo "</div>";
-            */
+            // Get Our Attributes
+            $username = $_POST['username'];
+            $password = $_POST['password'];
 
-            // Check Post Request Exists or not
-            if(isset($_POST['username'])){
-                
-                // Get Our Attributes
-                $username = $_POST['username'];
-                $password = $_POST['password'];
+            // Run Main line of code
+            try {
 
-                // Demo Display Data
-                echo "Hello" . $username;
+                // Connection to the database
+                $conn = connectDataBase();
 
-                // If User Selects Remember
-                if(isset($_POST['remember'])){
+                // Now Verify the User Login
+                if (loginAdmin($conn, $username, $password) == true) {
+                    header("Location: ../Dashboard");
 
-                    // To Be Implemented
-
+                } else {
+                    displayAlert("Enter Username or Password is not correct");
                 }
 
+
             }
-            else{
-                // To Do Nothing
+            // An exception has occured
+            catch (Exception $th) {
+                displayAlert($th);
             }
+
+
+
+        } else {
+            // To Do Nothing
+        }
         ?>
 
         <!-- Main Form of Our Website -->
